@@ -109,7 +109,7 @@
 
 
 //....................................................................
-
+//https://fine-cyan-turtle-hem.cyclic.app/todoapp
 
 const express = require('express');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
@@ -148,11 +148,35 @@ async function run() {
     });
 
     // Add a new todo item
+    // app.post('/todoapp', async (req, res) => {
+    //   const newTodo = req.body;
+    //   const result = await todoAppCollection.insertOne(newTodo);
+    //   res.json(result.ops[0]);
+    // });
+
     app.post('/todoapp', async (req, res) => {
-      const newTodo = req.body;
-      const result = await todoAppCollection.insertOne(newTodo);
-      res.json(result.ops[0]);
+      try {
+        const newTodo = req.body;
+        const result = await todoAppCollection.insertOne(newTodo);
+    
+        if (result && result.ops && result.ops.length > 0) {
+          res.json(result.ops[0]);
+        } else {
+          res.status(500).json({ error: 'Failed to insert todo.' });
+        }
+      } catch (error) {
+        console.error('Error inserting todo:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
     });
+    
+
+//     app.post('/todoapp', async (req, res) => {
+//     const user = req.body;
+//     console.log("user",user);
+//     const result = await appointmentOptionCollextion.insertOne(user);
+//     res.send(result);
+// });
 
     // Delete a todo item
     app.delete('/todoapp/:id', async (req, res) => {
